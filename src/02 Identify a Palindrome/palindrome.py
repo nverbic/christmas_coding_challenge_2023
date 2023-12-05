@@ -1,30 +1,26 @@
-''' Identify a palindrome '''
+class PalindromeChecker:
+    def __init__(self, text:str):
+        self.text = text
 
-def reverse_using_slice(text):
-    '''Reverse a string using slice operator'''
-    return text [::-1]
+    def sanitize_text(self):
+        """
+        Remove spaces and convert to lowercase for case-insensitive comparison.
+        """
+        return ''.join(char.lower() for char in self.text if char.isalnum())
 
-def is_palindrome(text):
-    '''Check if the text argument is a polindrome.'''
-    # Remove any white spaces and uppercases
-    original_text = "".join(text.split()).casefold()
-    # Reverse the text
-    reversed_text = reverse_using_slice(original_text)
+    def is_palindrome(self):
+        """
+        Check if the text is a palindrome.
+        """
+        sanitized_text = self.sanitize_text()
+        reversed_text = sanitized_text[::-1]
+        return sanitized_text == reversed_text
 
-    print(f"Inputed text without whitespaces: {original_text}")
-    print(f"Reversed text: {reversed_text}")
+if __name__ == "__main__":
+    
+    test_cases = ["radar", "A man, a plan, a canal, Panama!", "Hello, World!"]
 
-    # Ignore uppercase letters when comparing
-    if original_text == reversed_text:
-        return True
+    for test in test_cases:
+        print(f"Is {test} a palindrome? - {PalindromeChecker(test).is_palindrome()}")
 
-    return False
-
-
-if __name__ == '__main__':
-    input_text = input("Please enter a string to check if it is a palindrome: \n")
-    result = is_palindrome(input_text)
-    if result:
-        print("Yes, the string is a palindrome.")
-    else:
-        print("No, the string is not a palindrome. ")
+# slightly similar approach to yours
