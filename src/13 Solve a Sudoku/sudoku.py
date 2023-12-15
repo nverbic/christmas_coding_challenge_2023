@@ -1,7 +1,8 @@
 ''' Solve sudoku puzzle '''
 
 def get_submatrix_3x3(puzzle, row, column):
-    ''' Calculate and return the submatrix:
+    ''' Calculate and return a sudoku submatrix based
+        on the position of the empty location.
     
     Indices of sudoku submatrices:
 
@@ -37,27 +38,47 @@ def get_submatrix_3x3(puzzle, row, column):
     submatrix = [row[start_col:end_col] for row in puzzle[start_row:end_row]]
     return submatrix
 
-def solve_sudoku(puzzle):
-    ''' Solve sudoku puzzle '''
-    # Check that the number is not included in the row, column nor current square (submatrix)
+def find_empty_location(puzzle):
+    ''' Find the location with 0 '''
     for i in range(9):
         for j in range(9):
-            # check if the number is zero
             if puzzle[i][j] == 0:
-                # calculate to corresponding submatrix
-                submatrix = get_submatrix_3x3(puzzle, i, j)
-                # try one number
-                for number in range(1,10):
-                    # check that the number is not already in the row i,
-                    # in the column j and in the submatrix
-                    if ((number not in puzzle[i]) and
-                        all(row[j] != number for row in puzzle) and
-                        (number not in submatrix)):
-                        # set new number
-                        puzzle[i][j] = number
-                        break
-    for row in puzzle:
-        print(row)
+                return i, j
+    return None
+
+def solve_sudoku(puzzle):
+    ''' Solve sudoku puzzle '''
+    # Find an empty location
+    empty_location = find_empty_location(puzzle)
+
+    if not empty_location:
+        return True
+
+    row, col = empty_location
+
+    # calculate to corresponding submatrix
+    submatrix_3x3 = get_submatrix_3x3(puzzle, row, col)
+
+    # try one number
+    for number in range(1,10):
+        # check that the number is not already in the row i,
+        # in the column j and in the submatrix
+        if ((number not in puzzle[row]) and
+            all(r[col] != number for r in puzzle) and
+            (number not in submatrix_3x3)):
+
+            # set new number
+            puzzle[row][col] = number
+            
+            if solve_sudoku(puzzle):
+                return True
+            
+            # Revert the newly set number back to 0 i case the number 
+            # is not leading to the solution
+            puzzle[row][col] = 0
+    
+    # When it is not possible to set a number backtrack
+    return False
 
 if __name__ == '__main__':
     puzzle = [[5, 3, 0, 0, 7, 0, 0, 0, 0],
@@ -69,5 +90,8 @@ if __name__ == '__main__':
               [0, 6, 0, 0, 0, 0, 2, 8, 0],
               [0, 0, 0, 4, 1, 9, 0, 0, 5],
               [0, 0, 0, 0, 8, 0, 0, 7, 9]]
-    
+
     solve_sudoku(puzzle)
+
+    for row in puzzle:
+        print(row)
