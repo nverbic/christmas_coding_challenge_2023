@@ -34,12 +34,33 @@ Total
 
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
 
-def simulate_dice_rolls(dice):
+def plot_line_chart_seaborn(probabilities, num_dice, num_rolls):
+    ''' Plotting the probabilities'''
+    # Plotting the probabilities using seaborn
+    #sns.barplot(x=probabilities.index, y=probabilities.values, color='blue', alpha=0.7)
+    sns.lineplot(x=probabilities.index, y=probabilities, marker='o', color='blue')
+    plt.title(f'Dice rolling results probabilitie: {num_dice} dice, {num_rolls} rolls')
+    plt.xlabel('Result')
+    plt.ylabel('Probability')
+    plt.show()
+
+def plot_bar_chart_pyplot(probabilities, num_dice, num_rolls):
+    ''' Plotting the probabilities'''
+    # Plotting the probabilities using matplotlib pyplot
+    probabilities.plot(kind='bar')
+    plt.xlabel('Result')
+    plt.ylabel('Probability')
+    plt.title(f'Dice rolling results probabilities: {num_dice} dice, {num_rolls} rolls')
+    plt.show()
+
+
+def simulate_dice_rolls(dice, num_simulations):
     '''  Simualte dice rolls
          dice = number of sides on an arbitrary number of dice. '''
 
-    num_simulations = 1000000
     rolls = []
 
     # Roll dice
@@ -60,8 +81,10 @@ def simulate_dice_rolls(dice):
 def roll_dice(*args):
     '''  Simulate dice rolls and calculate probabilities of possible outcomes '''
 
+    num_simulations = 10000
+
     # Roll dice and return results in a DataFrame object
-    dice_results_df = simulate_dice_rolls(np.array(args))
+    dice_results_df = simulate_dice_rolls(np.array(args), num_simulations)
 
     print("Simulation results (first 10 rows):")
     print(dice_results_df.head(10))
@@ -73,6 +96,10 @@ def roll_dice(*args):
 
     print("\nProbabilities:")
     print(probabilities)
+
+    # plot
+    plot_bar_chart_pyplot(probabilities, len(args), num_simulations)
+    plot_line_chart_seaborn(probabilities, len(args), num_simulations)
 
 if __name__ == '__main__':
     roll_dice(4,6,6)
