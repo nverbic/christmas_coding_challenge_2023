@@ -56,6 +56,17 @@ def plot_bar_chart_pyplot(probabilities, num_dice, num_rolls):
     plt.title(f'Dice rolling results probabilities: {num_dice} dice, {num_rolls} rolls')
     plt.show()
 
+def plot_pie_chart_pyplot(probabilities, num_dice, num_rolls):
+    ''' Plotting the probabilities'''
+    # Plotting the probabilities using matplotlib pyplot
+    plt.figure(figsize=(8, 8))
+    plt.pie(probabilities, labels=probabilities.index)
+    plt.title(f'Dice rolling results probabilities: {num_dice} dice, {num_rolls} rolls')
+    # Create a custom legend with probabilities
+    legend_labels = [f'{index} ({value})' for index, value in zip(probabilities.index, probabilities)]
+    plt.legend(legend_labels, title='Total Probabilities', loc='center left', bbox_to_anchor=(1, 0.5))
+    plt.show()
+
 
 def simulate_dice_rolls(dice, num_simulations):
     '''  Simualte dice rolls
@@ -86,8 +97,10 @@ def roll_dice(*args):
     # Roll dice and return results in a DataFrame object
     dice_results_df = simulate_dice_rolls(np.array(args), num_simulations)
 
-    print("Simulation results (first 10 rows):")
+    print("Simulation results,\n the first 10 rows:")
     print(dice_results_df.head(10))
+    print("\nand the last 10 rows:")
+    print(dice_results_df.tail(10))
 
     # Calculate probabilities based on the simulation results
     # The value_counts method is used to calculate the frequencies 
@@ -100,6 +113,7 @@ def roll_dice(*args):
     # plot
     plot_bar_chart_pyplot(probabilities, len(args), num_simulations)
     plot_line_chart_seaborn(probabilities, len(args), num_simulations)
+    plot_pie_chart_pyplot(probabilities, len(args), num_simulations)
 
 if __name__ == '__main__':
     roll_dice(4,6,6)
