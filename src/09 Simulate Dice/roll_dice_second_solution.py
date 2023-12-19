@@ -35,36 +35,61 @@ Total
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import seaborn as sns
+import seaborn as sb
+
+def plot_histogram_seaborn(totals):
+    ''' Distribution of a dataset (totals)'''
+
+    sb.set_style('whitegrid')
+    sb.histplot(totals, kde=False, color='salmon', edgecolor='black')
+    plt.show()
 
 def plot_line_chart_seaborn(probabilities, num_dice, num_rolls):
     ''' Plotting the probabilities'''
+
+    sb.set_style('whitegrid')
+
     # Plotting the probabilities using seaborn
-    #sns.barplot(x=probabilities.index, y=probabilities.values, color='blue', alpha=0.7)
-    sns.lineplot(x=probabilities.index, y=probabilities, marker='o', color='blue')
-    plt.title(f'Dice rolling results probabilitie: {num_dice} dice, {num_rolls} rolls')
+    #sb.barplot(x=probabilities.index, y=probabilities.values, color='blue', alpha=0.7)
+
+    # Plotting the probabilities using seaborn - simpler solution
+    sb.lineplot(data=probabilities, marker='o', color='blue')
+
+    # Add grid
+    plt.grid(color='gray', linestyle='--', linewidth=0.5)
+
+    # Plot all of the x values as x ticks
+    plt.xticks(probabilities.index)
+
+    plt.title(f'Rolling dice simulation: {num_dice} dice, {num_rolls} rolls')
     plt.xlabel('Result')
     plt.ylabel('Probability')
     plt.show()
 
 def plot_bar_chart_pyplot(probabilities, num_dice, num_rolls):
     ''' Plotting the probabilities'''
+
     # Plotting the probabilities using matplotlib pyplot
     probabilities.plot(kind='bar')
+
     plt.xlabel('Result')
     plt.ylabel('Probability')
-    plt.title(f'Dice rolling results probabilities: {num_dice} dice, {num_rolls} rolls')
+    plt.title(f'Rolling dice simulation: {num_dice} dice, {num_rolls} rolls')
     plt.show()
 
 def plot_pie_chart_pyplot(probabilities, num_dice, num_rolls):
     ''' Plotting the probabilities'''
-    # Plotting the probabilities using matplotlib pyplot
+    
     plt.figure(figsize=(8, 8))
+
+    # Plotting the probabilities using matplotlib pyplot
     plt.pie(probabilities, labels=probabilities.index)
-    plt.title(f'Dice rolling results probabilities: {num_dice} dice, {num_rolls} rolls')
+
+    plt.title(f'Rolling dice simulation: {num_dice} dice, {num_rolls} rolls')
+
     # Create a custom legend with probabilities
     legend_labels = [f'{index} ({value})' for index, value in zip(probabilities.index, probabilities)]
-    plt.legend(legend_labels, title='Total Probabilities', loc='center left', bbox_to_anchor=(1, 0.5))
+    plt.legend(legend_labels, title='Total Probabilities', loc='best', bbox_to_anchor=(1, 0.5))
     plt.show()
 
 
@@ -114,6 +139,7 @@ def roll_dice(*args):
     plot_bar_chart_pyplot(probabilities, len(args), num_simulations)
     plot_line_chart_seaborn(probabilities, len(args), num_simulations)
     plot_pie_chart_pyplot(probabilities, len(args), num_simulations)
+    plot_histogram_seaborn(dice_results_df['Total'])
 
 if __name__ == '__main__':
     roll_dice(4,6,6)
