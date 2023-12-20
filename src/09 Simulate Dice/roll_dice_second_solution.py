@@ -21,7 +21,7 @@ Total
 5     0.04
 6     0.07
 7     0.10
-8     0.13
+8     0.12
 9     0.14
 10    0.14
 11    0.13
@@ -30,18 +30,29 @@ Total
 14    0.04
 15    0.02
 16    0.01
+Name: proportion, dtype: float64
+
+Performance when using pandas and numpy modules, code executed 1 number of times:
+          14.07788 seconds
 '''
 
+import timeit
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sb
 
+NUM_SIMULATIONS = 1000000
+
+def measure_roll_dice_performance():
+    ''' Measure the performance of the function '''
+    roll_dice(4,6,6)
+
 def plot_histogram_seaborn(totals):
     ''' Distribution of a dataset (totals)'''
 
     sb.set_style('whitegrid')
-    sb.histplot(totals, kde=False, color='salmon', edgecolor='black')
+    sb.histplot(totals, kde=True, color='salmon', edgecolor='black')
     plt.show()
 
 def plot_line_chart_seaborn(probabilities, num_dice, num_rolls):
@@ -79,7 +90,7 @@ def plot_bar_chart_pyplot(probabilities, num_dice, num_rolls):
 
 def plot_pie_chart_pyplot(probabilities, num_dice, num_rolls):
     ''' Plotting the probabilities'''
-    
+
     plt.figure(figsize=(8, 8))
 
     # Plotting the probabilities using matplotlib pyplot
@@ -117,29 +128,41 @@ def simulate_dice_rolls(dice, num_simulations):
 def roll_dice(*args):
     '''  Simulate dice rolls and calculate probabilities of possible outcomes '''
 
-    num_simulations = 10000
-
     # Roll dice and return results in a DataFrame object
-    dice_results_df = simulate_dice_rolls(np.array(args), num_simulations)
+    dice_results_df = simulate_dice_rolls(np.array(args), NUM_SIMULATIONS)
 
-    print("Simulation results,\n the first 10 rows:")
-    print(dice_results_df.head(10))
-    print("\nand the last 10 rows:")
-    print(dice_results_df.tail(10))
+    # Temporarily commented - measuring the performance
+    # print("Simulation results,\n the first 10 rows:")
+    # print(dice_results_df.head(10))
+    # print("\nand the last 10 rows:")
+    # print(dice_results_df.tail(10))
 
     # Calculate probabilities based on the simulation results
     # The value_counts method is used to calculate the frequencies 
     # of unique values in a specific column.
     probabilities = dice_results_df['Total'].value_counts(normalize=True).sort_index().round(2)
 
+    return probabilities
+
+if __name__ == '__main__':
+    # Calculate probabilities
+    probabilities = roll_dice(4,6,6)
+
+    # Print the result
     print("\nProbabilities:")
     print(probabilities)
 
-    # plot
-    plot_bar_chart_pyplot(probabilities, len(args), num_simulations)
-    plot_line_chart_seaborn(probabilities, len(args), num_simulations)
-    plot_pie_chart_pyplot(probabilities, len(args), num_simulations)
-    plot_histogram_seaborn(dice_results_df['Total'])
+    # Measure perfromance
+    time_counter_solution = timeit.timeit(setup=measure_roll_dice_performance,
+                                          stmt=roll_dice,
+                                          number=1)
+    print(f"\nPerformance when using pandas and numpy modules, code executed 1 number of times:\n\
+          {round(time_counter_solution, 5)} seconds\n")
 
-if __name__ == '__main__':
-    roll_dice(4,6,6)
+    # Plot
+    plot_bar_chart_pyplot(probabilities,3, NUM_SIMULATIONS)
+    plot_line_chart_seaborn(probabilities, 3, NUM_SIMULATIONS)
+    plot_pie_chart_pyplot(probabilities, 3, NUM_SIMULATIONS)
+
+    # Temporarily commented - measuring the performance
+    # plot_histogram_seaborn(dice_results_df['Total'])

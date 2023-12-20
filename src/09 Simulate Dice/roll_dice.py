@@ -1,25 +1,34 @@
 ''' Simulate dice 
 
 Output:
-Outcome probability for roll_dice(4, 6, 6):
+Outcome probability for roll_dice 4, 6, 6: 
 
-3 : 0.69%
-4 : 2.09%
-5 : 4.15%
-6 : 6.93%
-7 : 9.76%
-8 : 12.49%
-9 : 13.85%
-10 : 13.91%
-11 : 12.52%
-12 : 9.73%
-13 : 7.0%
-14 : 4.14%
-15 : 2.08%
-16 : 0.68%'''
+3 : 0.7%   
+4 : 2.08%  
+5 : 4.18%  
+6 : 7.0%   
+7 : 9.73%  
+8 : 12.48% 
+9 : 13.83% 
+10 : 13.85%
+11 : 12.55%
+12 : 9.73% 
+13 : 6.97% 
+14 : 4.17% 
+15 : 2.06% 
+16 : 0.7%
+
+Performance when using Counter class, code executed 1 number of times::
+          0.24349 seconds'''
 
 from random import randint
 from collections import Counter
+import timeit
+
+def measure_roll_dice_performance():
+    ''' Measure the performance of the function '''
+    roll_dice(4,6,6)
+
 
 def roll_dice(*args):
     '''  Takes a variable number of input arguments representing 
@@ -41,11 +50,22 @@ def roll_dice(*args):
     probabilities = {key: round((count / num_simulations)*100, 2) for
                      key, count in result_counts.items()}
 
+    return probabilities
+
+if __name__ == '__main__':
+    probabilities = roll_dice(4,6,6)
+
     # Order the dictionary and print
     ordered_probabilities_by_key_asc = dict(sorted(probabilities.items()))
-    print(f"\nOutcome probability for roll_dice{args}: \n")
+
+    # Print result
+    print(f"\nOutcome probability for roll_dice 4, 6, 6: \n")
     for key, value in ordered_probabilities_by_key_asc.items():
         print(f"{key} : {value}%")
 
-if __name__ == '__main__':
-    roll_dice(4,6,6)
+    # Measure perfromance
+    time_counter_solution = timeit.timeit(setup=measure_roll_dice_performance,
+                                          stmt=roll_dice,
+                                          number=1)
+    print(f"\nPerformance when using Counter class, code executed 1 number of times::\n\
+          {round(time_counter_solution, 5)} seconds\n")
