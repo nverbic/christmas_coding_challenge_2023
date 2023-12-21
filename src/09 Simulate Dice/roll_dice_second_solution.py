@@ -14,7 +14,7 @@ Simulation results (first 10 rows):
 8  (3, 3, 3)      9
 9  (2, 4, 6)     12
 
-Probabilities:
+Outcome probability for roll_dice (4, 6, 6), 1000000 rolls
 Total
 3     0.01
 4     0.02
@@ -30,13 +30,8 @@ Total
 14    0.04
 15    0.02
 16    0.01
-Name: proportion, dtype: float64
-
-Performance when using pandas and numpy modules, code executed 1 number of times:
-          14.07788 seconds
 '''
 
-import timeit
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -44,12 +39,8 @@ import seaborn as sb
 
 NUM_SIMULATIONS = 1000000
 
-def measure_roll_dice_performance():
-    ''' Measure the performance of the function '''
-    roll_dice(4,6,6)
-
 def plot_histogram_seaborn(totals):
-    ''' Distribution of a dataset (totals)'''
+    '''Plot distribution of a dataset (totals)'''
 
     sb.set_style('whitegrid')
     sb.histplot(totals, kde=True, color='salmon', edgecolor='black')
@@ -124,12 +115,11 @@ def simulate_dice_rolls(dice, num_simulations):
 
     return results_df
 
-
-def roll_dice(*args):
+def roll_dice(dice):
     '''  Simulate dice rolls and calculate probabilities of possible outcomes '''
 
     # Roll dice and return results in a DataFrame object
-    dice_results_df = simulate_dice_rolls(np.array(args), NUM_SIMULATIONS)
+    dice_results_df = simulate_dice_rolls(np.array(dice), NUM_SIMULATIONS)
 
     # Temporarily commented - measuring the performance
     # print("Simulation results,\n the first 10 rows:")
@@ -146,18 +136,12 @@ def roll_dice(*args):
 
 if __name__ == '__main__':
     # Calculate probabilities
-    probabilities = roll_dice(4,6,6)
+    dice = 4,6,6
+    probabilities = roll_dice(dice)
 
     # Print the result
-    print("\nProbabilities:")
+    print(f"\nOutcome probability for roll_dice {dice}, {NUM_SIMULATIONS} rolls")
     print(probabilities)
-
-    # Measure perfromance
-    time_counter_solution = timeit.timeit(setup=measure_roll_dice_performance,
-                                          stmt=roll_dice,
-                                          number=1)
-    print(f"\nPerformance when using pandas and numpy modules, code executed 1 number of times:\n\
-          {round(time_counter_solution, 5)} seconds\n")
 
     # Plot
     plot_bar_chart_pyplot(probabilities,3, NUM_SIMULATIONS)
