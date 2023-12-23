@@ -19,8 +19,9 @@ import os
 import zipfile
 
 # def zip_all(input_dir, extension_list, output_dir):
-def zip_all(input_dir, zip_file):
+def zip_all(input_dir, zip_file, file_extensions):
     '''' Build a ZIP Archive '''
+    file_ex = tuple(file_extensions)
     with zipfile.ZipFile(zip_file, 'w') as my_zip:
         # Walk through all files in the directory and its subdirectories
         for foldername, subfolders, filenames in os.walk(input_dir):
@@ -29,15 +30,16 @@ def zip_all(input_dir, zip_file):
             print(f"Files: {filenames}")
             print("\n")
             for filename in filenames:
-                # Create the full file path
-                file_path = os.path.join(foldername, filename)
+                if filename.lower().endswith(file_ex):
+                    # Create the full file path
+                    file_path = os.path.join(foldername, filename)
 
-                # Add the file to the ZIP archive using its relative path
-                file_path_inside_archive = os.path.relpath(file_path, input_dir)
+                    # Add the file to the ZIP archive using its relative path
+                    file_path_inside_archive = os.path.relpath(file_path, input_dir)
 
-                my_zip.write(file_path, file_path_inside_archive)
+                    my_zip.write(file_path, file_path_inside_archive)
 
-    print(f"Created ZIP archive: {zip_file}.")
+    print(f"Created ZIP archive: {zip_file}. Included extensions: {file_ex}")
 
 # commands used in solution video for reference
 if __name__ == '__main__':
@@ -48,5 +50,7 @@ if __name__ == '__main__':
     # Name of the ZIP archive to create
     zip_file = 'my_stuff.zip'
 
+    file_extensions = ['.jpg', '.txt']
+
     # Todo: Specify file extensions to be zipped
-    zip_all(input_dir, zip_file)
+    zip_all(input_dir, zip_file, file_extensions)
